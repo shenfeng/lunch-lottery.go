@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>周四中午吃饭分组</title>
+    <link href="/s/style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="page-wrap">
+      <h1>安排分组</h1>
+
+      <div id="tips">
+        <p>刷新改变分组</p>
+        <p>只有在星期四才能保存</p>
+        <p>保存后不能更改</p>
+      </div>
+
+      <ul>
+        {{range .Group}}
+        <li>
+          {{range .}}<span>{{ . }}</span>{{end}}
+        </li>
+        {{end}}
+      </ul>
+      <form method="post" action="/save">
+        <input type="hidden" name="order" value="{{.Order}}"/>
+        <input type="submit" value="保存"/>
+      </form>
+    </div>
+  </body>
+</html>
+

@@ -4,8 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -22,19 +26,13 @@ var groupCount = 6
 
 var addr = flag.String("addr", ":9292", "The addr to listen (':9292')")
 
+const seperator = ","
+const newline = "\n"
+
 type Lunch struct {
-	Year int
-	Month time.Month
-	Day   int
 	Group [][]string
-}
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
-}
-
-func listAll(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "List")
+	Order string
+	Date  string
 }
 
 func shuffle(input []string) []string {
@@ -68,18 +66,64 @@ func group(people []string, count int) [][]string {
 	return ret
 }
 
-func newLunch(w http.ResponseWriter, r *http.Request) {
-	g := group(shuffle(people), groupCount)
-	t, _ := template.ParseFiles("show.html")
-	y, m, d := time.Now().Date()
-	// fmt.Println(time.Now())
-	// fmt.Println(y, m, d)
-	t.Execute(w, &Lunch{Year: y,Month: m, Day: d, Group: g})
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	t, _ := template.ParseFiles("templates/index.html")
+
+	files, _ := ioutil.ReadDir("data")
+	lunches := make([]Lunch, len(files))
+	for i, file := range files {
+		bytes, _ := ioutil.ReadFile("data/" + file.Name())
+		c := strings.Trim(string(bytes), "\r\n ")
+		lines := strings.Split(c, newline)
+		groups := make([][]string, len(lines))
+		for j, line := range lines {
+			groups[j] = strings.Split(line, seperator)
+		}
+		lunches[i] = Lunch{Group: groups, Date: file.Name()}
+	}
+	t.Execute(w, lunches)
+}
+
+func saveGroupHandler(w http.ResponseWriter, r *http.Request) {
+	order := r.FormValue("order")
+	ordered := strings.Split(order, seperator)
+	now := time.Now()
+	if now.Weekday() == time.Thursday {
+		grouped := group(ordered, groupCount)
+		lines := make([]string, len(grouped))
+		for i := 0; i < len(grouped); i++ {
+			lines[i] = strings.Join(grouped[i], seperator)
+		}
+		y, m, d := now.Date()
+		name := fmt.Sprintf("data/%d-%d-%d", y, m, d)
+		_, err := os.Stat(name)
+		if err != nil {
+			ioutil.WriteFile(name, []byte(strings.Join(lines, newline)), 0600)
+			log.Print("write file ", name)
+			http.Redirect(w, r, "/", http.StatusFound)
+		} else {
+			http.Redirect(w, r, "/s/error.html", http.StatusFound)
+		}
+	} else {
+		http.Redirect(w, r, "/s/error.html", http.StatusFound)
+	}
+}
+
+func newLunchHanler(w http.ResponseWriter, r *http.Request) {
+	ordered := shuffle(people)
+	g := group(ordered, groupCount)
+	t, _ := template.ParseFiles("templates/new.html")
+	data := &Lunch{Group: g, Order: strings.Join(ordered, seperator)}
+	t.Execute(w, data)
 }
 
 func main() {
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/list", listAll)
-	http.HandleFunc("/new", newLunch)
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	flag.Parse()
+	http.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir("static"))))
+	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/new", newLunchHanler)
+	http.HandleFunc("/save", saveGroupHandler)
+	log.Print("Listen at ", *addr)
 	http.ListenAndServe(*addr, nil)
 }

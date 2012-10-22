@@ -1,0 +1,28 @@
+#page-wrap {
+    width: 900px;
+    margin: 10px auto;
+}
+
+span {
+    padding: 4px;
+}
+
+ul {
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    padding: 4px 0;
+}
+
+
+#tips p {
+    color: #800;
+    margin: 4px 0;
+}
+
+#tips {
+    background: #fff1a8;
+    padding: 2px;
+}

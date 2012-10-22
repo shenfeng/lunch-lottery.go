@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AVOS China 周四中午吃饭分组</title>
+    <link href="/s/style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="page-wrap">
+      <h1>AVOS China 周四中午吃饭分组</h1>
+      <ul>
+        {{range .}}
+        <h3> {{ .Date }}</h3>
+        <ul>
+          {{range .Group}}
+          <li>
+            {{range .}}<span>{{ . }}</span>{{end}}
+          </li>
+          {{end}}
+        </ul>
+        {{end}}
+      </ul>
+
+      <a href="/new">New</a>
+    </div>
+  </body>
+</html>
