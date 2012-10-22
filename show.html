@@ -1,0 +1,13 @@
+<h1>{{ .Year }}/{{printf "%d" .Month}}/{{ .Day }}日（周四）中午吃饭分组</h1>
+
+<ul>
+  {{range .Group}}
+  <li>
+    {{range .}}
+    <span>
+      {{ . }}
+    </span>
+    {{end}}
+  </li>
+  {{end}}
+</ul>
