@@ -88,7 +88,7 @@ func saveGroupHandler(w http.ResponseWriter, r *http.Request) {
 	order := r.FormValue("order")
 	ordered := strings.Split(order, seperator)
 	now := time.Now()
-	if now.Weekday() == time.Thursday {
+	if now.Weekday() == time.Thursday || now.Weekday() == time.Wednesday {
 		grouped := group(ordered, groupCount)
 		lines := make([]string, len(grouped))
 		for i := 0; i < len(grouped); i++ {
@@ -125,5 +125,6 @@ func main() {
 	http.HandleFunc("/new", newLunchHanler)
 	http.HandleFunc("/save", saveGroupHandler)
 	log.Print("Listen at ", *addr)
-	http.ListenAndServe(*addr, nil)
+	err := http.ListenAndServe(*addr, nil)
+	log.Fatal(err)
 }

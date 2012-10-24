@@ -24,5 +24,18 @@ li {
 
 #tips {
     background: #fff1a8;
-    padding: 2px;
+    padding: 3px;
+}
+
+
+a {
+    display: inline-block;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 8px;
+    background: #ddd;
+}
+
+a:hover {
+    background: #ccc;
 }
