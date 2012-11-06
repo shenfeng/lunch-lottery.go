@@ -9,18 +9,21 @@
   <body>
     <div id="page-wrap">
       <h1>AVOS China 周四中午吃饭分组</h1>
-      <ul>
+      <div class="groups">
         {{range .}}
-        <h3> {{ .Date }}</h3>
-        <ul>
-          {{range .Group}}
-          <li>
-            {{range .}}<span>{{ . }}</span>{{end}}
-          </li>
-          {{end}}
-        </ul>
+        <div class="group">
+          <h3> {{ .Date }}</h3>
+          <ul>
+            {{range .Group}}
+            <li>
+              {{range .}}<span>{{ . }}</span>{{end}}
+            </li>
+            {{end}}
+          </ul>
+        </div>
         {{end}}
-      </ul>
+        <div style="clear:both"></div>
+      </div>
       <a href="/new">Create New</a>
     </div>
   </body>

@@ -39,3 +39,18 @@ a {
 a:hover {
     background: #ccc;
 }
+
+.group {
+    padding: 6px 13px;
+    float: left;
+    /* border: 1px solid #cecefe; */
+}
+
+.groups {
+    margin: 10px;
+}
+
+.group:hover {
+    border-radius: 4px;
+    background: #ddd;
+}
