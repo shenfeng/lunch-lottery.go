@@ -14,12 +14,12 @@ import (
 )
 
 var people = []string{
-	"江宏", "小敏", "小江", "赵雪",
+	"江宏", "小敏", "小江", "赵雪", "孙长龙",
 	"吴哲", "名丽", "孙宁", "山川", "朱增",
-	"王臣汉", "丽辉", "邹剑", "李蠡",
+  "王臣汉", "丽辉", "邹剑", "李蠡", "姚佳丽",
 	"吴江程", "俊文", "朝中", "彦民",
 	"杨彤", "姜汉", "倪华杰", "晓丹",
-	"边边", "唐宇", "钱国祥", "莫倩", "沈锋",
+	"边边", "唐宇", "钱国祥", "沈锋",
 }
 
 var groupCount = 6
@@ -119,6 +119,7 @@ func newLunchHanler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+    rand.Seed(time.Now().UnixNano())
 	flag.Parse()
 	http.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", indexHandler)
